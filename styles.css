@@ -275,7 +275,24 @@ body {
   margin: 10px 0px;
  } 
   
+.promo-code{
+  margin: 10px 0px;
+}
+  
+.promo-code input{
+  padding: 6px 10px;
+}
 
+
+.promo-code button{
+  padding: 7.3px 12px;
+  background-color: #ff9900;
+  color: white;
+  outline: none;
+  border: none;
+  border-radius: 2px;
+
+}
 
 
   

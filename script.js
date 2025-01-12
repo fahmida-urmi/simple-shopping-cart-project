@@ -173,3 +173,70 @@ document.querySelector(".cart-icon a").addEventListener("click", (e) => {
   e.preventDefault();
   toggleCart();
 });
+
+
+// Declare a variable to track the applied promo code
+let appliedPromoCode = null;
+let currentDiscount = 0;
+
+function applyPromoCode() {
+  const promoInput = document.getElementById("promo-code").value.trim().toLowerCase();
+  const promoMessage = document.getElementById("promo-message");
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+  // Reset discount and promo message
+  currentDiscount = 0;
+  promoMessage.style.display = "none";
+
+  if (!promoInput) {
+    appliedPromoCode = null;
+    updateCartSummary(subtotal, currentDiscount);
+    return;
+  }
+
+  // Validate promo code
+  if (promoInput === "ostad10" && appliedPromoCode !== "ostad10") {
+    currentDiscount = subtotal * 0.10;
+    appliedPromoCode = "ostad10";
+    promoMessage.textContent = "Promo code 'ostad10' applied successfully!";
+    promoMessage.style.color = "green";
+    promoMessage.style.display = "block";
+  } else if (promoInput === "ostad5" && appliedPromoCode !== "ostad5") {
+    currentDiscount = subtotal * 0.05;
+    appliedPromoCode = "ostad5";
+    promoMessage.textContent = "Promo code 'ostad5' applied successfully!";
+    promoMessage.style.color = "green";
+    promoMessage.style.display = "block";
+  } else if (promoInput === appliedPromoCode) {
+    promoMessage.textContent = "Promo code already applied.";
+    promoMessage.style.color = "#ff4d4d";
+    promoMessage.style.display = "block";
+  } else {
+    promoMessage.textContent = "Invalid promo code.";
+    promoMessage.style.color = "#ff4d4d";
+    promoMessage.style.display = "block";
+  }
+
+  // Update cart summary
+  updateCartSummary(subtotal, currentDiscount);
+}
+
+function updateCartSummary(subtotal, discount) {
+  const finalTotal = subtotal - discount;
+  document.getElementById("cart-subtotal").innerText = `$${subtotal.toFixed(2)}`;
+  document.getElementById("cart-discount").innerText = `-$${discount.toFixed(2)}`;
+  document.getElementById("cart-total").innerText = `$${finalTotal.toFixed(2)}`;
+
+  const checkoutButton = document.getElementById("checkout-button");
+  checkoutButton.disabled = cart.length === 0 || finalTotal <= 0;
+}
+
+// Call this whenever the cart updates
+function onCartUpdate() {
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  if (appliedPromoCode) {
+    applyPromoCode();
+  } else {
+    updateCartSummary(subtotal, 0);
+  }
+}
